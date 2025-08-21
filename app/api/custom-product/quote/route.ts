@@ -32,7 +32,7 @@ function corsHeaders(origin: string | null) {
     "Access-Control-Allow-Methods": "POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     Vary: "Origin",
-  };
+  } as Record<string, string>;
 }
 
 export async function OPTIONS(req: NextRequest) {
@@ -72,7 +72,6 @@ export async function POST(req: NextRequest) {
         { status: 400, headers }
       );
     }
-    // Безопасность: ограничим семейство SKU
     if (baseSku && !/^WIDTH-1210\b/.test(baseSku)) {
       return NextResponse.json(
         { error: "Base SKU not allowed" },
@@ -95,25 +94,26 @@ export async function POST(req: NextRequest) {
 
     const description = `Площадь: ${c.area} м². База: ${c.base} €. Наценка: ${c.add} €. Итог: ${c.final} €`;
 
-    // Ecwid REST
+    // Ecwid REST (авторизация через заголовок Authorization: Bearer)
     const apiBase = `https://app.ecwid.com/api/v3/${ECWID_STORE_ID}`;
-    const res = await fetch(
-      `${apiBase}/products?token=${encodeURIComponent(ECWID_TOKEN)}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          price: c.final,
-          sku,
-          enabled: true,
-          showOnFrontpage: false,
-          trackQuantity: false,
-          description,
-          attributes: [{ name: "customPriceOneOff", value: "true" }],
-        }),
-      }
-    );
+    const res = await fetch(`${apiBase}/products`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ECWID_TOKEN}`,
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        price: c.final,
+        sku,
+        enabled: true,
+        showOnFrontpage: false,
+        trackQuantity: false,
+        description,
+        attributes: [{ name: "customPriceOneOff", value: "true" }],
+      }),
+    });
 
     if (!res.ok) {
       const txt = await res.text();
@@ -128,7 +128,6 @@ export async function POST(req: NextRequest) {
       { ok: true, productId: created.id, price: c.final, area: c.area, sku },
       { headers }
     );
-    // ...
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ error: msg }, { status: 500, headers });
