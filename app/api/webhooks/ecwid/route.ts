@@ -9,5 +9,4 @@ export async function POST(req: NextRequest) {
   console.log("Webhook received:", payload);
   return NextResponse.json({ ok: true });
 }
-
 export const runtime = "nodejs";
