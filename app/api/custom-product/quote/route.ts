@@ -128,11 +128,10 @@ export async function POST(req: NextRequest) {
       { ok: true, productId: created.id, price: c.final, area: c.area, sku },
       { headers }
     );
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: String(err?.message || err) },
-      { status: 500, headers }
-    );
+    // ...
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: msg }, { status: 500, headers });
   }
 }
 
