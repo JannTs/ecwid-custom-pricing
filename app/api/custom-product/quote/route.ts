@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
         price: c.final,
         sku,
         enabled: true,
-        showOnFrontpage: false,
+        showOnFrontpage: 0,
         trackQuantity: false,
         description,
         attributes: [{ name: "customPriceOneOff", value: "true" }],
