@@ -86,11 +86,11 @@ export async function POST(req: NextRequest) {
       : `CUST-${Date.now()}-${lengthMm}-${tt2(thickness)}`;
 
     const name = baseSku
-      ? `Лист ${baseSku.replace(
+      ? `Dimensions ${baseSku.replace(
           "WIDTH-",
           ""
         )}mm × ${lengthMm}mm, ${thickness}mm (Custom Quote)`
-      : `Dimension 1210mm × ${lengthMm}mm, ${thickness}mm (Custom Quote)`;
+      : `Dimensions 1210mm × ${lengthMm}mm, ${thickness}mm (Custom Quote)`;
 
     const description = `Area: ${c.area} м². Base price: ${c.base} €. Surcharge (thickness): ${c.add} €. Total: ${c.final} €`;
 
