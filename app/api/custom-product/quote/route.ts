@@ -89,12 +89,12 @@ export async function POST(req: NextRequest) {
       ? `Лист ${baseSku.replace(
           "WIDTH-",
           ""
-        )}мм × ${lengthMm}мм, ${thickness}мм (индивидуальный расчёт)`
-      : `Лист 1210мм × ${lengthMm}мм, ${thickness}мм (индивидуальный расчёт)`;
+        )}mm × ${lengthMm}mm, ${thickness}mm (Custom Quote)`
+      : `Dimension 1210mm × ${lengthMm}mm, ${thickness}mm (Custom Quote)`;
 
-    const description = `Площадь: ${c.area} м². База: ${c.base} €. Наценка: ${c.add} €. Итог: ${c.final} €`;
+    const description = `Area: ${c.area} м². Base price: ${c.base} €. Surcharge (thickness): ${c.add} €. Total: ${c.final} €`;
 
-    // Ecwid REST (авторизация через заголовок Authorization: Bearer)
+    // Ecwid REST (Authorization: Bearer)
     const apiBase = `https://app.ecwid.com/api/v3/${ECWID_STORE_ID}`;
     const res = await fetch(`${apiBase}/products`, {
       method: "POST",
